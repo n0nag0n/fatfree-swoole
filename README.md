@@ -7,7 +7,7 @@ In order to get this to work, clone this repo, then run `composer install` then 
 
 Please be aware you need to install swoole first. Also you **MUST** disable xdebug in order for swoole to run properly.
 
-Here are some preliminary benchmarks using `https://github.com/n0nag0n/fatfree-swoole`
+Here are some preliminary benchmarks using `ab -n 6000 -c 500 http://localhost:9501/hey`
 
 Internal PHP Webserver:
 ```
