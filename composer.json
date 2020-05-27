@@ -1,0 +1,24 @@
+{
+    "name": "n0nag0n/fat-swoole",
+    "description": "A shim for fat free and swoole",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Austin Collier",
+            "email": "austin@sky-9.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "bcosca/fatfree": "^3.7"
+	},
+	"autoload": {
+        "psr-4": {
+            "n0nag0n\\": "src/"
+		}
+	},
+	"config" : {
+		"optimize-autoloader": true
+	}
+}
