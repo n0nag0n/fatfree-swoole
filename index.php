@@ -82,6 +82,9 @@ $http->on("start", function (Swoole\HTTP\Server $server) {
 $http->on(
     "request",
     function (Swoole\HTTP\Request $swooleRequest, Swoole\HTTP\Response $swooleResponse) use ($fw, $FatFree_Swoole) {
+		$fw->set('ONREROUTE',function($url,$permanent) use ($swooleResponse) { 
+			$swooleResponse->redirect($url); 
+		});
 		$FatFree_Swoole->process($fw, $swooleRequest, $swooleResponse);
 		$swooleResponse->end();
     }
