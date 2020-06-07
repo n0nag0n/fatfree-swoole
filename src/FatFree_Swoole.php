@@ -68,16 +68,12 @@ class FatFree_Swoole extends \Prefab {
 			$$hive = &$processed_fw->ref('VERB');
 			$$hive = $value;
 		}
-		// $processed_fw->hive['VERB'] = &$_SERVER['REQUEST_METHOD'];
-		// $VERB = &$processed_fw->ref('VERB');
 		foreach (explode('|',\Base::GLOBALS) as $global) {
 			$lowercase_global = strtolower($global);
 			$globalval = &$processed_fw->ref($global);
-
 			$globalval = $global === 'SERVER' ? array_combine(array_map('strtoupper', array_keys($swooleRequest->{$lowercase_global})), $swooleRequest->{$lowercase_global}) : $swooleRequest->{$lowercase_global};
 		}
 		// $processed_fw->sync('REQUEST');
-		// print_r($processed_fw);
 		$processed_fw->run();
 		return $processed_fw;
 	}
