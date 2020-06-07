@@ -2,8 +2,7 @@
 
 In order to get this to work, clone this repo, then run `composer install` then do the following:
 1. Around line 2286, Unprivileged or comment out the `private function __clone() {}` so the base can be cloned.**（It's just a temporary alternative）**
-
-2.Use：php index.php
+1.Use：php index.php
 
 # take care
 Please be aware you need to install swoole first. Also you **MUST** disable xdebug in order for swoole to run properly.
