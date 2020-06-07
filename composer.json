@@ -5,13 +5,13 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Austin Collier",
-            "email": "austin@sky-9.com"
+            "name": "aaaronleung",
+            "email": "aaronleung@dpodo.com"
         }
     ],
     "minimum-stability": "stable",
     "require": {
-        "bcosca/fatfree": "^3.7"
+        "bcosca/fatfree-core": "dev-master"
 	},
 	"autoload": {
         "psr-4": {
