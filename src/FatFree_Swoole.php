@@ -47,66 +47,29 @@ class FatFree_Swoole extends \Prefab {
 		$path=preg_replace('/^'.preg_quote($base,'/').'/','',$uri['path']);
 
 
-		// $processed_fw->hive['HEADERS'] = &$headers;
-		$HEADERS = &$processed_fw->ref('HEADERS');
-		$HEADERS = $headers;
-
-		// $processed_fw->hive['AGENT'] = $processed_fw->agent();
-		$AGENT = &$processed_fw->ref('AGENT');
-		$AGENT = $processed_fw->agent();
-
-		// $processed_fw->hive['AJAX'] = $processed_fw->ajax();
-		$AJAX = &$processed_fw->ref('AJAX');
-		$AJAX = $processed_fw->ajax();
-
-		// $processed_fw->hive['BODY'] = $swooleRequest->rawContent();
-		$BODY = &$processed_fw->ref('BODY');
-		$BODY = $swooleRequest->rawContent();
-
-		// $processed_fw->hive['CLI'] = FALSE;
-		$CLI = &$processed_fw->ref('CLI');
-		$CLI = FALSE;
-
-		// $processed_fw->hive['FRAGMENT'] = isset($uri['fragment'])?$uri['fragment']:'';
-		$FRAGMENT = &$processed_fw->ref('FRAGMENT');
-		$FRAGMENT = isset($uri['fragment'])?$uri['fragment']:'';
-
-		// $processed_fw->hive['HOST'] = $_SERVER['SERVER_NAME'];
-		$HOST = &$processed_fw->ref('HOST');
-		$HOST = $_SERVER['SERVER_NAME'];
-
-		// $processed_fw->hive['PATH'] = $path;
-		$PATH = &$processed_fw->ref('PATH');
-		$PATH = $path;
-
-		// $processed_fw->hive['QUERY'] = isset($uri['query'])?$uri['query']:'';
-		$QUERY = &$processed_fw->ref('QUERY');
-		$QUERY = isset($uri['query'])?$uri['query']:'';
-
-		// $processed_fw->hive['ROOT'] = $_SERVER['DOCUMENT_ROOT'];
-		$ROOT = &$processed_fw->ref('ROOT');
-		$ROOT = $_SERVER['DOCUMENT_ROOT'];
-
-		// $processed_fw->hive['SCHEME'] = $scheme;
-		$SCHEME = &$processed_fw->ref('SCHEME');
-		$SCHEME = $scheme;
-
-		// $processed_fw->hive['SEED'] = $processed_fw->hash($_SERVER['SERVER_NAME'].$base);
-		$SEED = &$processed_fw->ref('SEED');
-		$SEED = $processed_fw->hash($_SERVER['SERVER_NAME'].$base);
-
-		// $processed_fw->hive['TIME'] = &$_SERVER['REQUEST_TIME_FLOAT'];
-		$TIME = &$processed_fw->ref('TIME');
-		$TIME = $_SERVER['REQUEST_TIME_FLOAT'];
-
-		// $processed_fw->hive['URI'] = &$_SERVER['REQUEST_URI'];
-		$URI = &$processed_fw->ref('URI');
-		$URI = $_SERVER['REQUEST_URI'];
-
+		$val = [
+		'HEADERS' => $headers,
+		'AGENT' => $processed_fw->agent(),
+		'AJAX' => $processed_fw->ajax(),
+		'BODY' => $swooleRequest->rawContent(),
+		'CLI' => FALSE,
+		'FRAGMENT' => isset($uri['fragment'])?$uri['fragment']:'',
+		'HOST' => $_SERVER['SERVER_NAME'],
+		'PATH' => $path,
+		'QUERY' => isset($uri['query'])?$uri['query']:'',
+		'ROOT' => $_SERVER['DOCUMENT_ROOT'],
+		'SCHEME' => $scheme,
+		'SEED' => $processed_fw->hash($_SERVER['SERVER_NAME'].$base),
+		'TIME' => $_SERVER['REQUEST_TIME_FLOAT'],
+		'URI' => $_SERVER['REQUEST_URI'],
+		'VERB' => $_SERVER['REQUEST_METHOD']
+		];
+		foreach ($val as $hive => $value) {
+			$$hive = &$processed_fw->ref('VERB');
+			$$hive = $value;
+		}
 		// $processed_fw->hive['VERB'] = &$_SERVER['REQUEST_METHOD'];
-		$VERB = &$processed_fw->ref('VERB');
-		$VERB = $_SERVER['REQUEST_METHOD'];
-
+		// $VERB = &$processed_fw->ref('VERB');
 		foreach (explode('|',\Base::GLOBALS) as $global) {
 			$lowercase_global = strtolower($global);
 			$globalval = &$processed_fw->ref($global);
