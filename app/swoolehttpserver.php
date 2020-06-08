@@ -24,11 +24,8 @@ class swooleHttpServer extends \Prefab {
 	}
 	private function register(Server $server) {
 		$server->on('start', [$this, 'onStart']);
-		// 此回调函数在worker进程中执行
 		$server->on('receive', [$this, 'onReceive']);
-		// 处理异步任务(此回调函数在task进程中执行)
 		$server->on('task', [$this, 'onTask']);
-		// 处理异步任务的结果(此回调函数在worker进程中执行)
 		$server->on('finish', [$this, 'onFinish']);
 		$server->on('shutdown', [$this, 'onShutdown']);
 		$server->on('request', [$this, 'onRequest']);
@@ -43,18 +40,30 @@ class swooleHttpServer extends \Prefab {
 	public function onStart(Server $server) {
 		$this->debug(sprintf('Swoole http server is started at http://%s:%s', $server->host, $server->port), PHP_EOL);
 	}
+
+	/**
+	 * callback function is executed in the worker process
+	 */
 	public function onReceive($http, $fd, $from_id, $data) {
 
-		//投递异步任务
+		// Deliver asynchronous tasks
 		$task_id = $http->task($data);
 		echo "Dispatch AsyncTask: id=$task_id\n";
 	}
+
+	/**
+	 * Processing asynchronous tasks (this callback function executes in the task process)
+	 */
 	public function onTask($http, $task_id, $from_id, $data) {
 
 		echo "New AsyncTask[id=$task_id]".PHP_EOL;
-		//返回任务执行的结果
+		// Return the result of task execution
 		$http->finish("$data -> OK");
 	}
+
+	/**
+	 * Results of processing asynchronous tasks (this callback function is executed in the worker process)
+	 */
 	public function onFinish($http, $task_id, $data) {
 		echo "AsyncTask[$task_id] Finish: $data".PHP_EOL;
 	}
