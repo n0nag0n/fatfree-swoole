@@ -11,6 +11,24 @@ Please be aware you need to install swoole first. Also you **MUST** disable xdeb
 # Test
 Here are some preliminary benchmarks using `ab -n 6000 -c 500 http://localhost:9501/hey`
 
+# nginx+swoole config
+```
+server {
+    root /data/wwwroot/;
+    server_name local.swoole.com;
+
+    location / {
+        proxy_http_version 1.1;
+        proxy_set_header Connection "keep-alive";
+        proxy_set_header X-Real-IP $remote_addr;
+        # if (!-e $request_filename) {
+             proxy_pass http://127.0.0.1:9501;
+        # }
+    }
+}
+```
+Using nginx anti proxy will consume some resources and reduce performance
+
 Internal PHP Webserver:
 ```
 Server Software:        

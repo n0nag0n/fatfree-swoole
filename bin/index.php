@@ -1,7 +1,15 @@
+#!/usr/bin/env php
 <?php
+if (PHP_SAPI != 'cli') {
+    header('HTTP/1.1 404 Not Found');
+    exit(1);
+}
 
-$path = __DIR__.'/vendor/autoload.php';
-require $path;
+ini_set('default_socket_timeout', 3);
+
+// require_once(dirname(__DIR__) . '/public/index.php');
+defined('DIR_PUBLIC') or define('DIR_PUBLIC', '../public');
+require_once(DIR_PUBLIC.'/index.php');
 
 /*
 Swoole\Http\Request Object
@@ -64,30 +72,11 @@ Swoole\Http\Response Object
 )
 */
 
-$fw = Base::instance();
-$fw->HALT = false;
-$fw->DEBUG = 3;
-$fw->QUIET = true;
+$http = new \Swoole\Http\Server("127.0.0.1", 9501);
 
-$fw->route('GET /', function($fw) { echo 'homepage'."\n"; var_dump($_GET); });
-$fw->route('GET /hey', function($fw) { echo json_encode([ 'some' => 'array', 'here' => 'would', 'be' => 'cool' ])."\n"; });
-$FatFree_Swoole = new n0nag0n\FatFree_Swoole;
-
-$http = new Swoole\HTTP\Server("127.0.0.1", 9501);
-
-$http->on("start", function (Swoole\HTTP\Server $server) {
-	echo sprintf('Swoole http server is started at http://%s:%s', $server->host, $server->port), PHP_EOL;
-});
-
-$http->on(
-	"request",
-	function (Swoole\HTTP\Request $swooleRequest, Swoole\HTTP\Response $swooleResponse) use ($fw, $FatFree_Swoole) {
-		$fw->set('ONREROUTE',function($url,$permanent) use ($swooleResponse) { 
-			$swooleResponse->redirect($url); 
-		});
-		$FatFree_Swoole->process($swooleRequest, $swooleResponse);
-		$swooleResponse->end();
-	}
-);
+new \App\swooleHttpServer($http);
 
 $http->start();
+print_r($f3->AUTOLOAD);
+// if start failed, well be echo !!
+echo 'Start failed!!';

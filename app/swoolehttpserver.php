@@ -1,8 +1,79 @@
 <?php 
 
-namespace n0nag0n;
+namespace App;
 
-class FatFree_Swoole extends \Prefab {
+use \Swoole\HTTP\Server;
+use \Swoole\HTTP\Request;
+use \Swoole\HTTP\Response;
+
+class swooleHttpServer extends \Prefab {
+
+	public function __construct(Server $server) {
+		$this->set($server);
+		$this->register($server);
+	}
+
+	private function set(Server $server) {
+		$server->set(array(
+			'reactor_num'   => 16,	 // reactor thread num
+			'worker_num'	=> 16,	 // worker process num
+			'backlog'	   => 128,   // listen backlog
+			'max_request'   => 50,
+			'dispatch_mode' => 1,
+		));
+	}
+	private function register(Server $server) {
+		$server->on('start', [$this, 'onStart']);
+		// 此回调函数在worker进程中执行
+		$server->on('receive', [$this, 'onReceive']);
+		// 处理异步任务(此回调函数在task进程中执行)
+		$server->on('task', [$this, 'onTask']);
+		// 处理异步任务的结果(此回调函数在worker进程中执行)
+		$server->on('finish', [$this, 'onFinish']);
+		$server->on('shutdown', [$this, 'onShutdown']);
+		$server->on('request', [$this, 'onRequest']);
+	}
+
+	private function debug(string $message) {
+		$date = date('Y-m-d H:i:s');
+		$memory = round(memory_get_usage(true) / 1000 / 1000, 3) . ' MB';
+		fwrite(STDOUT, $date . ' | ' . $memory . ' | ' . $message . "\n");
+	}
+
+	public function onStart(Server $server) {
+		$this->debug(sprintf('Swoole http server is started at http://%s:%s', $server->host, $server->port), PHP_EOL);
+	}
+	public function onReceive($http, $fd, $from_id, $data) {
+
+		//投递异步任务
+		$task_id = $http->task($data);
+		echo "Dispatch AsyncTask: id=$task_id\n";
+	}
+	public function onTask($http, $task_id, $from_id, $data) {
+
+		echo "New AsyncTask[id=$task_id]".PHP_EOL;
+		//返回任务执行的结果
+		$http->finish("$data -> OK");
+	}
+	public function onFinish($http, $task_id, $data) {
+		echo "AsyncTask[$task_id] Finish: $data".PHP_EOL;
+	}
+	public function onShutdown(Server $server) {
+		$this->debug('Swoole http server Shutting down');
+	}
+
+	public function onRequest(Request $swooleRequest, Response $swooleResponse) {
+		// if ($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
+		// 	$response->end();
+		// 	return;
+		// }
+
+		\Base::instance()->set('ONREROUTE',function($url,$permanent) use ($swooleResponse) { 
+			$swooleResponse->redirect($url); 
+		});
+		$this->process($swooleRequest, $swooleResponse);
+		$swooleResponse->end();
+	}
 
 	public function process(\Swoole\HTTP\Request $swooleRequest, \Swoole\HTTP\Response $swooleResponse) {
 
@@ -81,6 +152,7 @@ class FatFree_Swoole extends \Prefab {
 	protected function convertToSwooleResponse(\Swoole\HTTP\Response $swooleResponse, \Base $processed_fw) {
 		if(!empty($processed_fw->RESPONSE)) {
 			$swooleResponse->header('Content-Length', (string) strlen($processed_fw->RESPONSE));
+			$swooleResponse->header('Server', (string) $processed_fw->PACKAGE);
 		}
 
 		// deal with cookies
