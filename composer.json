@@ -1,5 +1,5 @@
 {
-    "name": "n0nag0n/fat-swoole",
+    "name": "soyleung/fat-swoole",
     "description": "A shim for fat free and swoole",
     "type": "library",
     "license": "MIT",
