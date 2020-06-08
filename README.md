@@ -2,7 +2,7 @@ First of all, thank to @Austin come from the USA。
 # FatFree Swoole
 
 In order to get this to work, clone this repo, then run `composer install` then do the following:
-1. Around line 2286, Unprivileged or comment out the `private function __clone() {}` so the base can be cloned(**It's just a temporary alternative**.)
+1. Around line 2314, Unprivileged or comment out the `private function __clone() {}` so the base can be cloned(**It's just a temporary alternative**.)
 2.Use：`php index.php`
 
 # take care
