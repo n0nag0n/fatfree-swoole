@@ -48,7 +48,7 @@ class FatFree_Swoole extends \Prefab {
 
 
 		$val = [
-		'HEADERS' => $headers,
+		'HEADERS' => &$headers,
 		'AGENT' => $processed_fw->agent(),
 		'AJAX' => $processed_fw->ajax(),
 		'BODY' => $swooleRequest->rawContent(),
@@ -60,12 +60,12 @@ class FatFree_Swoole extends \Prefab {
 		'ROOT' => $_SERVER['DOCUMENT_ROOT'],
 		'SCHEME' => $scheme,
 		'SEED' => $processed_fw->hash($_SERVER['SERVER_NAME'].$base),
-		'TIME' => $_SERVER['REQUEST_TIME_FLOAT'],
-		'URI' => $_SERVER['REQUEST_URI'],
-		'VERB' => $_SERVER['REQUEST_METHOD']
+		'TIME' => &$_SERVER['REQUEST_TIME_FLOAT'],
+		'URI' => &$_SERVER['REQUEST_URI'],
+		'VERB' => &$_SERVER['REQUEST_METHOD']
 		];
 		foreach ($val as $hive => $value) {
-			$$hive = &$processed_fw->ref('VERB');
+			$$hive = &$processed_fw->ref($hive);
 			$$hive = $value;
 		}
 		foreach (explode('|',\Base::GLOBALS) as $global) {
@@ -78,7 +78,7 @@ class FatFree_Swoole extends \Prefab {
 		return $processed_fw;
 	}
 
-	protected function convertToSwooleResponse(\Swoole\HTTP\Response $swooleResponse, \Base $processed_fw)  {
+	protected function convertToSwooleResponse(\Swoole\HTTP\Response $swooleResponse, \Base $processed_fw) {
 		if(!empty($processed_fw->RESPONSE)) {
 			$swooleResponse->header('Content-Length', (string) strlen($processed_fw->RESPONSE));
 		}
