@@ -1,4 +1,4 @@
-First of all, thank to @Austin come from the USA。
+First of all, thank to @n0nag0n come from the USA。
 # FatFree Swoole
 
 In order to get this to work, clone this repo, then run `composer install` then do the following:
