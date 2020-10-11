@@ -1,4 +1,6 @@
-# FatFree Swoole
+# Fat-Free Swoole
+
+Fat-Free needs a little help in order to make it work with Swoole. If you want another implementation of someone who went completely bananas with integrating in Swoole with Fat-Free, see [https://github.com/soyleung/Fs](https://github.com/soyleung/Fs)
 
 In order to get this to work, clone this repo, then run `composer install` then do the following:
 1. Open up base.php in the Fatfree framework. Remove the "final" keyword from `final class Base extends Prefab implements ArrayAccess {`
